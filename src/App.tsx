@@ -1,25 +1,38 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Fragment } from "react";
+import styled from "styled-components";
+import { GlobalStyle } from "./styles/GlobalStyles";
+import TextSelector from "./components/text-selector/TextSelector";
+const AppContainer = styled.div`
+  position: relative;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  overflow-y: hidden;
+`;
+
+const ChildContainer = styled.div`
+  flex: 1;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  margin-top: 20px;
+  padding: 20px;
+`;
 
 function App() {
+  function handleSelectText(selected: ISimpleTextSelection) {
+    console.log(selected);
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Fragment>
+      <GlobalStyle />
+      <AppContainer>
+        <ChildContainer>Node Editor Goes Here</ChildContainer>
+        <ChildContainer>
+          <TextSelector onSelect={handleSelectText} />
+        </ChildContainer>
+      </AppContainer>
+    </Fragment>
   );
 }
 
