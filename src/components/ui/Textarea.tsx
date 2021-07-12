@@ -2,23 +2,24 @@ import styled from "styled-components";
 import TextareaAutosize from "react-textarea-autosize";
 import { Palette } from "../../styles/GlobalStyles";
 
+// Basic styled Textarea component
 const StyledTextArea = styled(TextareaAutosize)`
   border: none;
-  background: ${Palette.offWhite};
-  border-radius: 5px;
+  background: ${(props: ITextareaProps) =>
+    props.background || "none"};
   padding: 20px;
   resize: none;
   width: 90%;
   height: 100%;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
   &:focus {
     outline: none;
     border: none;
   }
-  color: ${Palette.black};
-  caret-color: ${Palette.green};
+  color: ${(props: ITextareaProps) => props.color || Palette.black};
+  caret-color: ${(props: ITextareaProps) => props.caretColor || Palette.green};
   &::selection {
-    background-color: ${Palette.green};
+    background-color: ${(props: ITextareaProps) =>
+      props.selectedColor || Palette.green};
   }
 `;
 

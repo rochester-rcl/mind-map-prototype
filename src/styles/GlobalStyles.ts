@@ -1,5 +1,7 @@
 import { createGlobalStyle } from "styled-components";
 import "./fonts.css";
+
+// Color palette for the UI
 // https://coolors.co/eeeeff-5fb0b7-1a192b-f5348e-5bc8af
 export const Palette = {
   offWhite: "#EEEEFF",
@@ -11,6 +13,7 @@ export const Palette = {
   lightGrey: "#EAE1DF"
 };
 
+// Styles to be applied globally
 export const GlobalStyle = createGlobalStyle`
     * {
         font-family: 'JetBrains Mono', monospace;
