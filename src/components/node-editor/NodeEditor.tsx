@@ -19,13 +19,23 @@ const NodeLabelDisplay = styled.div`
   display: block;
 `;
 
+/**
+ * Basic text display for Node labels
+ * @param props
+ * @returns
+ */
 function NodeLabel(props: INodeLabelProps) {
   const { label } = props;
   return <NodeLabelDisplay>{label}</NodeLabelDisplay>;
 }
 
+/**
+ * Drag and drop-enabled node editor that stores ISimpleSelectedTextNodes
+ * @param props
+ * @returns
+ */
 export default function NodeEditor(props: INodeEditorProps) {
-  const { onDrop, onSelectNode, nodes } = props;
+  const { onDrop, onSelectNode, nodes, edges } = props;
   const [internalNodes, setInternalNodes] = useState<ISimpleSelectedTextNode[]>(
     []
   );
@@ -33,6 +43,7 @@ export default function NodeEditor(props: INodeEditorProps) {
     []
   );
 
+  // Hook for enabling dropping of ISimpleTextSelection items
   const [collectedProps, drop] = useDrop(() => ({
     accept: SelectedText,
     drop: handleDrop
@@ -50,6 +61,10 @@ export default function NodeEditor(props: INodeEditorProps) {
     return { x: x + offsetX, y: y + offsetY };
   }
 
+  /**
+   * Adds a new ISimpleSelectedTextNode based on the ISimpleTextSelection item dropped on this component
+   * @param item
+   */
   function handleDrop(item: ISimpleTextSelection) {
     // check if item exists already, for now, just create a new node for each drop
     setInternalNodes(oldNodes => {
@@ -64,6 +79,10 @@ export default function NodeEditor(props: INodeEditorProps) {
     });
   }
 
+  /**
+   * Adds a new edge between 2 exising nodes
+   * @param params
+   */
   function handleAddEdge(params: Edge | Connection) {
     setInternalEdges(oldEdges => {
       const newEdges = addEdge(
@@ -74,12 +93,18 @@ export default function NodeEditor(props: INodeEditorProps) {
     });
   }
 
+  // will set all internal nodes and edges from the passed in props - can be used for deserialization
   useEffect(() => {
     setInternalNodes(nodes || []);
-  }, [nodes]);
+    setInternalEdges(edges || []);
+  }, [nodes, edges]);
 
-  let elements = [...internalNodes.map(n => n.node), ...internalEdges] as FlowElement[];
-
+  let elements = [
+    ...internalNodes.map(n => n.node),
+    ...internalEdges
+  ] as FlowElement[];
+  
+  // Renders the ReactFlow component with controls
   return (
     <Fragment>
       <ReactFlow elements={elements} ref={drop} onConnect={handleAddEdge}>
