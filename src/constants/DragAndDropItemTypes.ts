@@ -1,0 +1,1 @@
+export const SelectedText = "SELECTED_TEXT";

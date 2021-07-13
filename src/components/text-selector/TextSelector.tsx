@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { Fragment, useState, useEffect } from "react";
+import { useDrag } from "react-dnd";
 import Textarea from "../ui/Textarea";
+import { SelectedText } from "../../constants/DragAndDropItemTypes";
 
 interface IPagePosition {
   pageX: number;
@@ -8,8 +10,8 @@ interface IPagePosition {
 
 /**
  * A basic component for adding and selecting text
- * @param props 
- * @returns 
+ * @param props
+ * @returns
  */
 export default function TextSelector(props: ITextSelectorProps) {
   const { onSelect, selectThreshold } = props;
@@ -33,8 +35,15 @@ export default function TextSelector(props: ITextSelectorProps) {
     setEndPos({ pageX, pageY });
   }
 
+  const [collected, drag, dragPreview] = useDrag(() => ({
+    type: SelectedText,
+    item: selected,
+    canDrag: monitor => selected !== null && !selecting,
+    collect: monitor => ({ isDragging: monitor.isDragging() })
+  }));
+
   // checks to see whether or not the user dragged the mouse
-  function didMouseDrag(
+  function didMouseSelect(
     start: IPagePosition,
     end: IPagePosition,
     threshold: number
@@ -48,7 +57,7 @@ export default function TextSelector(props: ITextSelectorProps) {
   // this callback is only called when startPos, endPos, or selectThreshold values are changed
   useEffect(() => {
     if (!selecting && startPos && endPos) {
-      if (didMouseDrag(startPos, endPos, selectThreshold || 5)) {
+      if (didMouseSelect(startPos, endPos, selectThreshold || 5)) {
         let selected = window.getSelection();
         if (selected) {
           setSelected({
@@ -66,13 +75,15 @@ export default function TextSelector(props: ITextSelectorProps) {
       onSelect(selected);
     }
   }, [selected, onSelect]);
-
   return (
-    <Textarea
-      placeholder="Paste text ..."
-      minRows={20}
-      onMouseDown={handleMouseDown}
-      onMouseUp={handleMouseUp}
-    />
+    <Fragment>
+      <Textarea
+        ref={drag}
+        placeholder="Paste text ..."
+        minRows={20}
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
+      />
+    </Fragment>
   );
 }
