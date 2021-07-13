@@ -5,13 +5,18 @@ import ReactFlow, {
   Background,
   Controls,
   XYPosition,
-  Node
+  addEdge,
+  FlowElement,
+  Connection,
+  Node,
+  Edge
 } from "react-flow-renderer";
 import { Palette } from "../../styles/GlobalStyles";
 import { SelectedText } from "../../constants/DragAndDropItemTypes";
 
+// Add additional label styles here
 const NodeLabelDisplay = styled.div`
-    text-overflow: ellipsis;
+  display: block;
 `;
 
 function NodeLabel(props: INodeLabelProps) {
@@ -20,8 +25,11 @@ function NodeLabel(props: INodeLabelProps) {
 }
 
 export default function NodeEditor(props: INodeEditorProps) {
-  let { onDrop, onSelectNode, nodes } = props;
-  let [internalNodes, setInternalNodes] = useState<ISimpleSelectedTextNode[]>(
+  const { onDrop, onSelectNode, nodes } = props;
+  const [internalNodes, setInternalNodes] = useState<ISimpleSelectedTextNode[]>(
+    []
+  );
+  const [internalEdges, setInternalEdges] = useState<Array<Edge | Connection>>(
     []
   );
 
@@ -56,15 +64,25 @@ export default function NodeEditor(props: INodeEditorProps) {
     });
   }
 
+  function handleAddEdge(params: Edge | Connection) {
+    setInternalEdges(oldEdges => {
+      const newEdges = addEdge(
+        { ...params, animated: false, style: { stroke: Palette.green } },
+        oldEdges as FlowElement[]
+      );
+      return newEdges as (Edge | Connection)[];
+    });
+  }
+
   useEffect(() => {
     setInternalNodes(nodes || []);
   }, [nodes]);
 
-  let elements = internalNodes.map(n => n.node);
+  let elements = [...internalNodes.map(n => n.node), ...internalEdges] as FlowElement[];
 
   return (
     <Fragment>
-      <ReactFlow elements={elements} ref={drop}>
+      <ReactFlow elements={elements} ref={drop} onConnect={handleAddEdge}>
         <Background color={Palette.blue} size={2} gap={50} />
         <Controls />
       </ReactFlow>
