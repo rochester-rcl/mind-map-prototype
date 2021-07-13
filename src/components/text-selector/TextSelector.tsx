@@ -35,12 +35,15 @@ export default function TextSelector(props: ITextSelectorProps) {
     setEndPos({ pageX, pageY });
   }
 
-  const [collected, drag, dragPreview] = useDrag(() => ({
-    type: SelectedText,
-    item: selected,
-    canDrag: monitor => selected !== null && !selecting,
-    collect: monitor => ({ isDragging: monitor.isDragging() })
-  }));
+  const [collected, drag, dragPreview] = useDrag(
+    () => ({
+      type: SelectedText,
+      item: selected,
+      canDrag: () => selected !== null,
+      collect: monitor => ({ isDragging: monitor.isDragging() })
+    }),
+    [selected]
+  );
 
   // checks to see whether or not the user dragged the mouse
   function didMouseSelect(
@@ -75,6 +78,7 @@ export default function TextSelector(props: ITextSelectorProps) {
       onSelect(selected);
     }
   }, [selected, onSelect]);
+
   return (
     <Fragment>
       <Textarea

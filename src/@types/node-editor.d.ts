@@ -6,7 +6,12 @@ interface INodeEditorProps {
   nodes?: ISimpleSelectedTextNode[];
 }
 
+interface INodeLabelProps {
+    label: string;
+    // add more props here
+}
+
 interface ISimpleSelectedTextNode {
-  flowElement: import("react-flow-renderer").FlowElement;
+  node: import("react-flow-renderer").Node;
   selected: ISimpleTextSelection;
 }
