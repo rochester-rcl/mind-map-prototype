@@ -1,11 +1,31 @@
-import React, { Fragment, useState, useEffect } from "react";
+import {
+  useRef,
+  useState,
+  useEffect,
+  useContext,
+  MouseEvent,
+  createRef,
+  RefObject
+} from "react";
 import { useDrag } from "react-dnd";
+import styled from "styled-components";
 import Textarea from "../ui/Textarea";
 import { SelectedText } from "../../constants/DragAndDropItemTypes";
+import { Palette } from "../../styles/GlobalStyles";
+import { AppContext } from "../../App";
 
 interface IPagePosition {
   pageX: number;
   pageY: number;
+}
+
+const HighlightedText = styled.span`
+  background: ${(props: IHighlightedTextProps) =>
+    props.highlighted ? props.highlightedColor || Palette.green : "none"};
+`;
+
+interface INodeRefMap {
+  [key: string]: RefObject<HTMLDivElement>;
 }
 
 /**
@@ -15,21 +35,37 @@ interface IPagePosition {
  */
 export default function TextSelector(props: ITextSelectorProps) {
   const { onSelect, selectThreshold } = props;
+
+  const { selectedTextNodes, highlightedTextNode } = useContext(AppContext);
+
   // internal component state
-  const [selecting, setSelecting] = useState(false);
+  const [selecting, setSelecting] = useState<boolean>(false);
   const [startPos, setStartPos] = useState<IPagePosition | null>(null);
   const [endPos, setEndPos] = useState<IPagePosition | null>(null);
   const [selected, setSelected] = useState<ISimpleTextSelection | null>(null);
+  const [innerText, setInnerText] = useState<string>("");
+
+  const textareaRef = useRef<HTMLDivElement>(null);
+  // hold a list of all refs based on the current nodes
+  const [selectedTextRefs, setSelectedTextRefs] = useState<INodeRefMap>({});
+
+  // text change event handler
+  function handleTextChange() {
+    const { current } = textareaRef;
+    if (current) {
+      setInnerText(current.innerText);
+    }
+  }
 
   // mousedown event handler
-  function handleMouseDown(evt: React.MouseEvent<HTMLTextAreaElement>) {
+  function handleMouseDown(evt: MouseEvent<HTMLDivElement>) {
     const { pageX, pageY } = evt;
     setSelecting(true);
     setStartPos({ pageX, pageY });
   }
 
   // mouseup event handler
-  function handleMouseUp(evt: React.MouseEvent<HTMLTextAreaElement>) {
+  function handleMouseUp(evt: MouseEvent<HTMLDivElement>) {
     const { pageX, pageY } = evt;
     setSelecting(false);
     setEndPos({ pageX, pageY });
@@ -61,8 +97,8 @@ export default function TextSelector(props: ITextSelectorProps) {
   useEffect(() => {
     if (!selecting && startPos && endPos) {
       if (didMouseSelect(startPos, endPos, selectThreshold || 5)) {
-        let selected = window.getSelection();
-        if (selected) {
+        const selected = window.getSelection();
+        if (selected && selected.rangeCount) {
           setSelected({
             text: selected.toString(),
             range: selected.getRangeAt(0)
@@ -79,15 +115,49 @@ export default function TextSelector(props: ITextSelectorProps) {
     }
   }, [selected, onSelect]);
 
+  useEffect(() => {
+    const nodeRefs = selectedTextNodes.reduce((refs: INodeRefMap, textNode) => {
+      refs[textNode.node.id] = createRef();
+      return refs;
+    }, {});
+    setSelectedTextRefs(nodeRefs);
+  }, [selectedTextNodes]);
+
+  useEffect(() => {
+    // wrap all selected node ranges
+    for (const textNode of selectedTextNodes) {
+      const { node, selected } = textNode;
+      const ref = selectedTextRefs[node.id];
+      if (ref && ref.current) {
+        // check to make sure content isn't already in the node
+        if (ref.current.innerText === "") {
+          selected.range.surroundContents(ref.current);
+        }
+      }
+    }
+  }, [selectedTextRefs, selectedTextNodes]);
+
   return (
-    <Fragment>
+    <div ref={drag}>
       <Textarea
-        ref={drag}
-        placeholder="Paste text ..."
-        minRows={20}
+        ref={textareaRef}
+        contentEditable={true}
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
+        onInput={handleTextChange}
+        value={innerText}
       />
-    </Fragment>
+      {selectedTextNodes.map(tn => (
+        <HighlightedText
+          highlighted={
+            (highlightedTextNode &&
+              highlightedTextNode.node.id === tn.node.id) ||
+            false
+          }
+          key={tn.node.id}
+          ref={selectedTextRefs[tn.node.id]}
+        />
+      ))}
+    </div>
   );
 }

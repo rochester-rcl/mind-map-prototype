@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import { useState, createContext } from "react";
 import styled from "styled-components";
 import { GlobalStyle, Palette } from "./styles/GlobalStyles";
 import TextSelector from "./components/text-selector/TextSelector";
@@ -31,29 +31,49 @@ const TextSelectorContainer = styled(ChildContainer)`
   padding: 20px;
 `;
 
+const defaultAppCtx: IAppContext = {
+  selectedTextNodes: [],
+  highlightedTextNode: null
+};
+
+export const AppContext = createContext<IAppContext>(defaultAppCtx);
+
 /**
  * The main App component - renders global styles as well as
  * the TextSelector and NodeEditor components
  * @returns
  */
 function App() {
-  // sample text select handler callback
-  function handleSelectText(selected: ISimpleTextSelection) {
-    console.log(selected);
+  const [highlightedTextNode, setHighlightedTextNode] =
+    useState<ISimpleSelectedTextNode | null>(null);
+
+  const [selectedTextNodes, setSelectedTextNodes] = useState<
+    ISimpleSelectedTextNode[]
+  >([]);
+
+  function handleSelectNode(node: ISimpleSelectedTextNode) {
+    setHighlightedTextNode(node);
+  }
+
+  function handleNodesChange(nodes: ISimpleSelectedTextNode[]) {
+    setSelectedTextNodes(nodes);
   }
 
   return (
-    <Fragment>
+    <AppContext.Provider value={{ selectedTextNodes, highlightedTextNode }}>
       <GlobalStyle />
       <AppContainer>
         <NodeEditorContainer>
-          <NodeEditor />
+          <NodeEditor
+            onSelectNode={handleSelectNode}
+            onNodesChange={handleNodesChange}
+          />
         </NodeEditorContainer>
         <TextSelectorContainer>
-          <TextSelector onSelect={handleSelectText} />
+          <TextSelector />
         </TextSelectorContainer>
       </AppContainer>
-    </Fragment>
+    </AppContext.Provider>
   );
 }
 

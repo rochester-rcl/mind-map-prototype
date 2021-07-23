@@ -35,7 +35,7 @@ function NodeLabel(props: INodeLabelProps) {
  * @returns
  */
 export default function NodeEditor(props: INodeEditorProps) {
-  const { onDrop, onSelectNode, nodes, edges } = props;
+  const { onSelectNode, onNodesChange, nodes, edges } = props;
   const [internalNodes, setInternalNodes] = useState<ISimpleSelectedTextNode[]>(
     []
   );
@@ -75,7 +75,8 @@ export default function NodeEditor(props: INodeEditorProps) {
           oldNodes.length > 0 ? oldNodes[oldNodes.length - 1].node : null
         )
       };
-      return [...oldNodes, ...[{ node, selected: item }]];
+      const textNode = { node, selected: item };
+      return [...oldNodes, ...[textNode]];
     });
   }
 
@@ -93,21 +94,44 @@ export default function NodeEditor(props: INodeEditorProps) {
     });
   }
 
+  function findInternalNode(id: string): ISimpleSelectedTextNode | null {
+    return internalNodes.find(tn => tn.node.id === id) || null;
+  }
+
+  function handleSelectNode(event: React.MouseEvent, element: Node | Edge) {
+    const { id } = element;
+    const node = findInternalNode(id);
+    if (node && onSelectNode) {
+      onSelectNode(node);
+    }
+  }
+
   // will set all internal nodes and edges from the passed in props - can be used for deserialization
   useEffect(() => {
     setInternalNodes(nodes || []);
     setInternalEdges(edges || []);
   }, [nodes, edges]);
 
+  useEffect(() => {
+    if (onNodesChange) {
+      onNodesChange(internalNodes);
+    }
+  }, [internalNodes]);
+
   let elements = [
     ...internalNodes.map(n => n.node),
     ...internalEdges
   ] as FlowElement[];
-  
+
   // Renders the ReactFlow component with controls
   return (
     <Fragment>
-      <ReactFlow elements={elements} ref={drop} onConnect={handleAddEdge}>
+      <ReactFlow
+        elements={elements}
+        ref={drop}
+        onConnect={handleAddEdge}
+        onElementClick={handleSelectNode}
+      >
         <Background color={Palette.blue} size={2} gap={50} />
         <Controls />
       </ReactFlow>

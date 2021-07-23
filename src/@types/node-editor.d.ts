@@ -3,6 +3,7 @@
 interface INodeEditorProps {
   onDrop?: (selection: ISimpleTextSelection) => void;
   onSelectNode?: (node: ISimpleSelectedTextNode) => void;
+  onNodesChange?: (nodes: ISimpleSelectedTextNode[]) => void;
   nodes?: ISimpleSelectedTextNode[];
   edges?: (
     | import("react-flow-renderer").Edge
