@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, ReactNode } from "react";
 import {
   Editor,
   EditorState,
@@ -14,8 +14,16 @@ const HighlightedText = styled.span`
     props.highlighted ? props.highlightedColor || Palette.green : "none"};
 `;
 
-function Highlighted({ children }: any) {
-  return <HighlightedText highlighted={true}>{children}</HighlightedText>;
+interface IDraftDecoratorProps {
+  children: ReactNode;
+  [key: string]: any;
+}
+function Highlighted(props: IDraftDecoratorProps) {
+  return (
+    <HighlightedText {...props} highlighted={true}>
+      {props.children}
+    </HighlightedText>
+  );
 }
 
 const EditorContainer = styled.div`
