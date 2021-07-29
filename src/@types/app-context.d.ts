@@ -1,4 +1,4 @@
 interface IAppContext {
-  selectedTextNodes: ISimpleSelectedTextNode[];
-  highlightedTextNode: ISimpleSelectedTextNode | null;
+  selectedTextNodes: IDraftSelectedTextNode[];
+  highlightedTextNode: IDraftSelectedTextNode | null;
 }

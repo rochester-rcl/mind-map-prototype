@@ -1,10 +1,10 @@
 // types for the NodeEditor component
 
 interface INodeEditorProps {
-  onDrop?: (selection: ISimpleTextSelection) => void;
-  onSelectNode?: (node: ISimpleSelectedTextNode) => void;
-  onNodesChange?: (nodes: ISimpleSelectedTextNode[]) => void;
-  nodes?: ISimpleSelectedTextNode[];
+  onDrop?: (selection: IDraftTextSelection) => void;
+  onSelectNode?: (node: IDraftSelectedTextNode) => void;
+  onNodesChange?: (nodes: IDraftSelectedTextNode[]) => void;
+  nodes?: IDraftSelectedTextNode[];
   edges?: (
     | import("react-flow-renderer").Edge
     | import("react-flow-renderer").Connection
@@ -16,7 +16,7 @@ interface INodeLabelProps {
   // add more props here
 }
 
-interface ISimpleSelectedTextNode {
+interface IDraftSelectedTextNode {
   node: import("react-flow-renderer").Node;
-  selected: ISimpleTextSelection;
+  selected: IDraftTextSelection;
 }

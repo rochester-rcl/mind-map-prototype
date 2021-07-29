@@ -13,3 +13,8 @@ interface IHighlightedTextProps {
   highlighted: boolean;
   highlightedColor?: string;
 }
+
+interface IHighlightedTextDragLayerProps extends IHighlightedTextProps {
+  x: number;
+  y: number;
+}

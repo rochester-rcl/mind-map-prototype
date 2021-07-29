@@ -45,17 +45,17 @@ export const AppContext = createContext<IAppContext>(defaultAppCtx);
  */
 function App() {
   const [highlightedTextNode, setHighlightedTextNode] =
-    useState<ISimpleSelectedTextNode | null>(null);
+    useState<IDraftSelectedTextNode | null>(null);
 
   const [selectedTextNodes, setSelectedTextNodes] = useState<
-    ISimpleSelectedTextNode[]
+    IDraftSelectedTextNode[]
   >([]);
 
-  function handleSelectNode(node: ISimpleSelectedTextNode) {
+  function handleSelectNode(node: IDraftSelectedTextNode) {
     setHighlightedTextNode(node);
   }
 
-  function handleNodesChange(nodes: ISimpleSelectedTextNode[]) {
+  function handleNodesChange(nodes: IDraftSelectedTextNode[]) {
     setSelectedTextNodes(nodes);
   }
 

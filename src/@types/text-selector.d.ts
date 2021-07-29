@@ -3,11 +3,11 @@
 interface ITextSelectorProps {
   canEdit?: boolean;
   canDragSelection?: boolean;
-  onSelect?: (selection: ISimpleTextSelection) => any;
+  onSelect?: (selection: IDraftTextSelection) => any;
   selectThreshold?: number;
 }
 
-interface ISimpleTextSelection {
-  text: string;
-  range: Range;
+interface ITextSelectorDragLayerProps {
+  highlightColor?: string;
+  dragPreview: any;
 }

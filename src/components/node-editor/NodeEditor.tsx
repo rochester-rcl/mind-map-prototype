@@ -9,7 +9,8 @@ import ReactFlow, {
   FlowElement,
   Connection,
   Node,
-  Edge
+  Edge,
+  removeElements
 } from "react-flow-renderer";
 import { Palette } from "../../styles/GlobalStyles";
 import { SelectedText } from "../../constants/DragAndDropItemTypes";
@@ -36,7 +37,7 @@ function NodeLabel(props: INodeLabelProps) {
  */
 export default function NodeEditor(props: INodeEditorProps) {
   const { onSelectNode, onNodesChange, nodes, edges } = props;
-  const [internalNodes, setInternalNodes] = useState<ISimpleSelectedTextNode[]>(
+  const [internalNodes, setInternalNodes] = useState<IDraftSelectedTextNode[]>(
     []
   );
   const [internalEdges, setInternalEdges] = useState<Array<Edge | Connection>>(
@@ -65,7 +66,7 @@ export default function NodeEditor(props: INodeEditorProps) {
    * Adds a new ISimpleSelectedTextNode based on the ISimpleTextSelection item dropped on this component
    * @param item
    */
-  function handleDrop(item: ISimpleTextSelection) {
+  function handleDrop(item: IDraftTextSelection) {
     // check if item exists already, for now, just create a new node for each drop
     setInternalNodes(oldNodes => {
       const node: Node = {
@@ -78,6 +79,29 @@ export default function NodeEditor(props: INodeEditorProps) {
       const textNode = { node, selected: item };
       return [...oldNodes, ...[textNode]];
     });
+  }
+
+  function handleRemoveElements(elements: FlowElement[]) {
+    let remainingElements = removeElements(elements, [
+      ...internalNodes.map(internalNode => internalNode.node),
+      ...(internalEdges as Edge[])
+    ]);
+    const remainingEdges = remainingElements.filter(elem => isEdge(elem));
+    const remainingNodeIds = remainingElements
+      .filter(elem => isNode(elem))
+      .map(n => n.id);
+    setInternalEdges(remainingEdges as Array<Edge | Connection>);
+    setInternalNodes((prevNodes: IDraftSelectedTextNode[]) =>
+      prevNodes.filter(pn => remainingNodeIds.includes(pn.node.id))
+    );
+  }
+
+  function isEdge(element: FlowElement): element is Edge {
+    return (element as Edge).source !== undefined;
+  }
+
+  function isNode(element: FlowElement): element is Node {
+    return (element as Node).position !== undefined;
   }
 
   /**
@@ -94,7 +118,7 @@ export default function NodeEditor(props: INodeEditorProps) {
     });
   }
 
-  function findInternalNode(id: string): ISimpleSelectedTextNode | null {
+  function findInternalNode(id: string): IDraftSelectedTextNode | null {
     return internalNodes.find(tn => tn.node.id === id) || null;
   }
 
@@ -131,6 +155,8 @@ export default function NodeEditor(props: INodeEditorProps) {
         ref={drop}
         onConnect={handleAddEdge}
         onElementClick={handleSelectNode}
+        onElementsRemove={handleRemoveElements}
+        deleteKeyCode={46} /**delete key */
       >
         <Background color={Palette.blue} size={2} gap={50} />
         <Controls />
