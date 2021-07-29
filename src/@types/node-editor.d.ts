@@ -3,6 +3,7 @@
 interface INodeEditorProps {
   onDrop?: (selection: IDraftTextSelection) => void;
   onSelectNode?: (node: IDraftSelectedTextNode) => void;
+  onSelectNodes?: (nodes: IDraftTextSelectionNode[]) => void;
   onNodesChange?: (nodes: IDraftSelectedTextNode[]) => void;
   nodes?: IDraftSelectedTextNode[];
   edges?: (

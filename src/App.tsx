@@ -33,7 +33,7 @@ const TextSelectorContainer = styled(ChildContainer)`
 
 const defaultAppCtx: IAppContext = {
   selectedTextNodes: [],
-  highlightedTextNode: null
+  highlightedTexts: []
 };
 
 export const AppContext = createContext<IAppContext>(defaultAppCtx);
@@ -44,15 +44,20 @@ export const AppContext = createContext<IAppContext>(defaultAppCtx);
  * @returns
  */
 function App() {
-  const [highlightedTextNode, setHighlightedTextNode] =
-    useState<IDraftSelectedTextNode | null>(null);
+  const [highlightedTexts, setHighlightedTexts] = useState<
+    IDraftTextSelection[]
+  >([]);
 
   const [selectedTextNodes, setSelectedTextNodes] = useState<
     IDraftSelectedTextNode[]
   >([]);
 
+  function handleSelectNodes(nodes: IDraftSelectedTextNode[]) {
+    setHighlightedTexts(nodes.map(n => n.selected));
+  }
+
   function handleSelectNode(node: IDraftSelectedTextNode) {
-    setHighlightedTextNode(node);
+    setHighlightedTexts([node.selected]);
   }
 
   function handleNodesChange(nodes: IDraftSelectedTextNode[]) {
@@ -60,7 +65,7 @@ function App() {
   }
 
   return (
-    <AppContext.Provider value={{ selectedTextNodes, highlightedTextNode }}>
+    <AppContext.Provider value={{ selectedTextNodes, highlightedTexts }}>
       <GlobalStyle />
       <AppContainer>
         <NodeEditorContainer>

@@ -66,7 +66,7 @@ export default function NodeEditor(props: INodeEditorProps) {
    * Adds a new ISimpleSelectedTextNode based on the ISimpleTextSelection item dropped on this component
    * @param item
    */
-  function handleDrop(item: IDraftTextSelection) {
+  function handleDrop(item: IDraftTextSelection): void {
     // check if item exists already, for now, just create a new node for each drop
     setInternalNodes(oldNodes => {
       const node: Node = {
@@ -81,7 +81,7 @@ export default function NodeEditor(props: INodeEditorProps) {
     });
   }
 
-  function handleRemoveElements(elements: FlowElement[]) {
+  function handleRemoveElements(elements: FlowElement[]): void {
     let remainingElements = removeElements(elements, [
       ...internalNodes.map(internalNode => internalNode.node),
       ...(internalEdges as Edge[])

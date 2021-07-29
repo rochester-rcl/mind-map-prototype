@@ -8,36 +8,16 @@ import {
   RefObject
 } from "react";
 import { useDrag, useDragLayer } from "react-dnd";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import { SelectedText } from "../../constants/DragAndDropItemTypes";
-import { Palette } from "../../styles/GlobalStyles";
 import { AppContext } from "../../App";
 import TextEditor from "../text-editor/TextEditor";
 
-interface IPagePosition {
-  pageX: number;
-  pageY: number;
-}
-
-const HighlightedTextMixin = css`
-  background: ${(props: IHighlightedTextProps) =>
-    props.highlighted ? props.highlightedColor || Palette.green : "none"};
-`;
-
-const HighlightedText = styled.span`
-  ${HighlightedTextMixin}
-`;
-
 const HighlightedTextDragLayer = styled.span`
-  ${HighlightedTextMixin}
   position: absolute;
   top: ${(props: IHighlightedTextDragLayerProps) => props.y};
   left: ${(props: IHighlightedTextDragLayerProps) => props.x};
 `;
-
-interface INodeRefMap {
-  [key: string]: RefObject<HTMLDivElement>;
-}
 
 /**
  *
@@ -77,7 +57,7 @@ function TextSelectorDragLayer(props: ITextSelectorDragLayerProps) {
 export default function TextSelector(props: ITextSelectorProps) {
   const { onSelect, selectThreshold } = props;
 
-  const { selectedTextNodes, highlightedTextNode } = useContext(AppContext);
+  const { selectedTextNodes, highlightedTexts } = useContext(AppContext);
 
   // internal component state
   const [selected, setSelected] = useState<IDraftTextSelection | null>(null);
@@ -101,7 +81,10 @@ export default function TextSelector(props: ITextSelectorProps) {
 
   return (
     <div ref={drag}>
-      <TextEditor onSelect={setSelected} />
+      <TextEditor
+        onSelect={setSelected}
+        highlightedContent={highlightedTexts}
+      />
       {/*collected.isDragging ? (
         <TextSelectorDragLayer dragPreview={dragPreview} />
       ) : null*/}

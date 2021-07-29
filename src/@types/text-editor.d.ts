@@ -1,5 +1,6 @@
 interface ITextEditorProps {
   onSelect?: (selection: IDraftTextSelection) => void;
+  highlightedContent?: IDraftTextSelection[];
 }
 
 interface IDraftTextSelection {
