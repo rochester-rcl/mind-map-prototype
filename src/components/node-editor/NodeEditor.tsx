@@ -14,6 +14,7 @@ import ReactFlow, {
 } from "react-flow-renderer";
 import { Palette } from "../../styles/GlobalStyles";
 import { SelectedText } from "../../constants/DragAndDropItemTypes";
+import { v4 as uuidv4 } from "uuid";
 
 // Add additional label styles here
 const NodeLabelDisplay = styled.div`
@@ -70,7 +71,7 @@ export default function NodeEditor(props: INodeEditorProps) {
     // check if item exists already, for now, just create a new node for each drop
     setInternalNodes(oldNodes => {
       const node: Node = {
-        id: `node-${(oldNodes.length + 1).toString()}`,
+        id: `node-${uuidv4()}`,
         data: { label: <NodeLabel label={item.text} /> },
         position: computeNodePosition(
           oldNodes.length > 0 ? oldNodes[oldNodes.length - 1].node : null

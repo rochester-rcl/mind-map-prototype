@@ -16,9 +16,7 @@ const AppContainer = styled.div`
 // Child container display component
 const ChildContainer = styled.div`
   flex: 0.6;
-  height: 100%;
   overflow-y: auto;
-  overflow-x: hidden;
 `;
 
 const NodeEditorContainer = styled(ChildContainer)`
@@ -69,7 +67,7 @@ function App() {
   }
 
   const highlightedTexts = highlightedTextNodes.map(tn => tn.selected);
-  console.log(highlightedTexts);
+
   return (
     <AppContext.Provider value={{ selectedTextNodes, highlightedTexts }}>
       <GlobalStyle />

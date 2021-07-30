@@ -108,7 +108,11 @@ export default function TextEditor(props: ITextEditorProps) {
 
   return (
     <EditorContainer>
-      <Editor editorState={editorState} onChange={setEditorState} />
+      <Editor
+        placeholder="Add text ..."
+        editorState={editorState}
+        onChange={setEditorState}
+      />
     </EditorContainer>
   );
 }
