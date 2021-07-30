@@ -44,8 +44,8 @@ export const AppContext = createContext<IAppContext>(defaultAppCtx);
  * @returns
  */
 function App() {
-  const [highlightedTexts, setHighlightedTexts] = useState<
-    IDraftTextSelection[]
+  const [highlightedTextNodes, setHighlightedTextNodes] = useState<
+    IDraftSelectedTextNode[]
   >([]);
 
   const [selectedTextNodes, setSelectedTextNodes] = useState<
@@ -53,17 +53,23 @@ function App() {
   >([]);
 
   function handleSelectNodes(nodes: IDraftSelectedTextNode[]) {
-    setHighlightedTexts(nodes.map(n => n.selected));
+    setHighlightedTextNodes(nodes);
   }
 
   function handleSelectNode(node: IDraftSelectedTextNode) {
-    setHighlightedTexts([node.selected]);
+    setHighlightedTextNodes([node]);
   }
 
   function handleNodesChange(nodes: IDraftSelectedTextNode[]) {
     setSelectedTextNodes(nodes);
+    setHighlightedTextNodes((prevHighlighted: IDraftSelectedTextNode[]) => {
+      const highlightedIds = prevHighlighted.map(({ node }) => node.id);
+      return nodes.filter(({ node }) => highlightedIds.includes(node.id));
+    });
   }
 
+  const highlightedTexts = highlightedTextNodes.map(tn => tn.selected);
+  console.log(highlightedTexts);
   return (
     <AppContext.Provider value={{ selectedTextNodes, highlightedTexts }}>
       <GlobalStyle />
