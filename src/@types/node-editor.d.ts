@@ -5,6 +5,7 @@ interface INodeEditorProps {
   onSelectNode?: (node: IDraftSelectedTextNode) => void;
   onSelectNodes?: (nodes: IDraftTextSelectionNode[]) => void;
   onNodesChange?: (nodes: IDraftSelectedTextNode[]) => void;
+  onDeselectNodes?: () => void;
   nodes?: IDraftSelectedTextNode[];
   edges?: (
     | import("react-flow-renderer").Edge

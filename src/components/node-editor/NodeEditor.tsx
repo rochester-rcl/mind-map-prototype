@@ -27,7 +27,7 @@ const NodeTypes = {
  * @returns
  */
 export default function NodeEditor(props: INodeEditorProps) {
-  const { onSelectNode, onNodesChange, nodes, edges } = props;
+  const { onSelectNode, onNodesChange, onDeselectNodes, nodes, edges } = props;
   const [internalNodes, setInternalNodes] = useState<IDraftSelectedTextNode[]>(
     []
   );
@@ -123,6 +123,12 @@ export default function NodeEditor(props: INodeEditorProps) {
     }
   }
 
+  function handlePaneClick(event: React.MouseEvent) {
+    if (onDeselectNodes) {
+      onDeselectNodes();
+    }
+  }
+
   // will set all internal nodes and edges from the passed in props - can be used for deserialization
   useEffect(() => {
     setInternalNodes(nodes || []);
@@ -150,6 +156,7 @@ export default function NodeEditor(props: INodeEditorProps) {
         onConnect={handleAddEdge}
         onElementClick={handleSelectNode}
         onElementsRemove={handleRemoveElements}
+        onPaneClick={handlePaneClick}
         deleteKeyCode={46} /**delete key */
       >
         <Background color={Palette.blue} size={2} gap={50} />

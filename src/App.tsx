@@ -59,6 +59,10 @@ function App() {
     setHighlightedTextNodes([node]);
   }
 
+  function handleDeselectNodes() {
+    setHighlightedTextNodes([]);
+  }
+
   function handleNodesChange(nodes: IDraftSelectedTextNode[]) {
     setSelectedTextNodes(nodes);
     setHighlightedTextNodes((prevHighlighted: IDraftSelectedTextNode[]) => {
@@ -77,6 +81,7 @@ function App() {
           <NodeEditor
             onSelectNode={handleSelectNode}
             onNodesChange={handleNodesChange}
+            onDeselectNodes={handleDeselectNodes}
           />
         </NodeEditorContainer>
         <TextSelectorContainer>
