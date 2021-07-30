@@ -1,4 +1,4 @@
-import { memo, Fragment, useState } from "react";
+import { memo, Fragment, useState, MouseEvent } from "react";
 import styled from "styled-components";
 import { Handle, NodeProps, Position } from "react-flow-renderer";
 import { Palette } from "../../styles/GlobalStyles";
@@ -24,9 +24,9 @@ const NodeContainer = styled.div`
 `;
 
 const NodeLabelTextEditorContainer = styled.div`
-  background: ${(props: { selected: boolean }) =>
-    props.selected ? Palette.lightGrey : "none"};
-  border: 1px solid ${Palette.white};
+  border: 1px solid
+    ${(props: { selected: boolean }) =>
+      props.selected ? Palette.lightGrey : Palette.white};
   &:hover {
     border: 1px solid ${Palette.lightGrey};
     cursor: text;
@@ -46,13 +46,22 @@ function TextareaNode(props: INodeLabelProps) {
     setActive(true);
   }
 
+  function handleTextareaMouseDown(evt: MouseEvent<HTMLTextAreaElement>) {
+    // disable drag when selecting text
+    evt.stopPropagation();
+  }
+
   return (
     <NodeContainer selected={selected}>
       <NodeLabelTextEditorContainer
         selected={selected && active}
         onClick={handleSetActive}
       >
-        <Textarea defaultValue={label} disabled={!selected && !active} />
+        <Textarea
+          defaultValue={label}
+          disabled={!selected && !active}
+          onMouseDown={handleTextareaMouseDown}
+        />
       </NodeLabelTextEditorContainer>
     </NodeContainer>
   );
