@@ -14,6 +14,7 @@ interface INodeEditorProps {
 
 interface INodeLabelProps {
   label: string;
+  selected: boolean;
   // add more props here
 }
 

@@ -27,6 +27,7 @@ const TextSelectorContainer = styled(ChildContainer)`
   flex: 0.4;
   background: ${Palette.white};
   padding: 20px;
+  overflow-x: hidden;
 `;
 
 const defaultAppCtx: IAppContext = {

@@ -15,21 +15,11 @@ import ReactFlow, {
 import { Palette } from "../../styles/GlobalStyles";
 import { SelectedText } from "../../constants/DragAndDropItemTypes";
 import { v4 as uuidv4 } from "uuid";
+import TextareaNode from "./TextareaNode";
 
-// Add additional label styles here
-const NodeLabelDisplay = styled.div`
-  display: block;
-`;
-
-/**
- * Basic text display for Node labels
- * @param props
- * @returns
- */
-function NodeLabel(props: INodeLabelProps) {
-  const { label } = props;
-  return <NodeLabelDisplay>{label}</NodeLabelDisplay>;
-}
+const NodeTypes = {
+  textareaNode: TextareaNode
+};
 
 /**
  * Drag and drop-enabled node editor that stores ISimpleSelectedTextNodes
@@ -72,7 +62,9 @@ export default function NodeEditor(props: INodeEditorProps) {
     setInternalNodes(oldNodes => {
       const node: Node = {
         id: `node-${uuidv4()}`,
-        data: { label: <NodeLabel label={item.text} /> },
+        data: { label: item.text },
+        style: { border: `1px solid ${Palette.lightGrey}` },
+        type: "textareaNode",
         position: computeNodePosition(
           oldNodes.length > 0 ? oldNodes[oldNodes.length - 1].node : null
         )
@@ -154,6 +146,7 @@ export default function NodeEditor(props: INodeEditorProps) {
       <ReactFlow
         elements={elements}
         ref={drop}
+        nodeTypes={NodeTypes}
         onConnect={handleAddEdge}
         onElementClick={handleSelectNode}
         onElementsRemove={handleRemoveElements}

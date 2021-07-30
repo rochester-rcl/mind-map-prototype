@@ -1,11 +1,12 @@
 import styled from "styled-components";
 import { Palette } from "../../styles/GlobalStyles";
+import TextareaAutosize from "react-textarea-autosize";
 
 // Basic styled Textarea component
-const StyledTextArea = styled.div`
+const StyledTextArea = styled(TextareaAutosize)`
   border: none;
   background: ${(props: ITextareaProps) => props.background || "none"};
-  padding: 20px;
+  padding: 5px;
   resize: none;
   width: 90%;
   height: 100%;
