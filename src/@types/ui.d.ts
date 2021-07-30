@@ -12,6 +12,7 @@ interface ITextareaProps extends IUIProps {
 interface IHighlightedTextProps {
   highlighted: boolean;
   highlightedColor?: string;
+  ref?: RefObject<HTMLSpanElement>
 }
 
 interface IHighlightedTextDragLayerProps extends IHighlightedTextProps {

@@ -82,6 +82,7 @@ function App() {
             onSelectNode={handleSelectNode}
             onNodesChange={handleNodesChange}
             onDeselectNodes={handleDeselectNodes}
+            onSelectNodes={handleSelectNodes}
           />
         </NodeEditorContainer>
         <TextSelectorContainer>

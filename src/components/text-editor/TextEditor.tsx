@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, ReactNode } from "react";
+import { useState, useEffect, createRef, ReactNode } from "react";
 import {
   Editor,
   EditorState,
@@ -19,8 +19,18 @@ interface IDraftDecoratorProps {
   [key: string]: any;
 }
 function Highlighted(props: IDraftDecoratorProps) {
+  const highlightedRef = createRef<HTMLSpanElement>();
+
+  useEffect(() => {
+    if (highlightedRef.current) {
+      highlightedRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+      });
+    }
+  }, [highlightedRef]);
   return (
-    <HighlightedText {...props} highlighted={true}>
+    <HighlightedText ref={highlightedRef} {...props} highlighted={true}>
       {props.children}
     </HighlightedText>
   );
