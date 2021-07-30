@@ -1,4 +1,4 @@
-import { memo, Fragment } from "react";
+import { memo, Fragment, useState } from "react";
 import styled from "styled-components";
 import { Handle, NodeProps, Position } from "react-flow-renderer";
 import { Palette } from "../../styles/GlobalStyles";
@@ -26,6 +26,11 @@ const NodeContainer = styled.div`
 const NodeLabelTextEditorContainer = styled.div`
   background: ${(props: { selected: boolean }) =>
     props.selected ? Palette.lightGrey : "none"};
+  border: 1px solid ${Palette.white};
+  &:hover {
+    border: 1px solid ${Palette.lightGrey};
+    cursor: text;
+  }
 `;
 
 /**
@@ -35,10 +40,19 @@ const NodeLabelTextEditorContainer = styled.div`
  */
 function TextareaNode(props: INodeLabelProps) {
   const { label, selected } = props;
+  const [active, setActive] = useState(false);
+
+  function handleSetActive() {
+    setActive(true);
+  }
+
   return (
     <NodeContainer selected={selected}>
-      <NodeLabelTextEditorContainer selected={selected}>
-        <Textarea defaultValue={label} disabled={!selected} />
+      <NodeLabelTextEditorContainer
+        selected={selected && active}
+        onClick={handleSetActive}
+      >
+        <Textarea defaultValue={label} disabled={!selected && !active} />
       </NodeLabelTextEditorContainer>
     </NodeContainer>
   );
