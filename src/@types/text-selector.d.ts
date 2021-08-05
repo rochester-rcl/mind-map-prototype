@@ -9,5 +9,4 @@ interface ITextSelectorProps {
 
 interface ITextSelectorDragLayerProps {
   highlightColor?: string;
-  dragPreview: any;
 }

@@ -26,10 +26,14 @@ export const GlobalStyle = createGlobalStyle`
         background: ${Palette.white};
         height: 100vh;
         width: 100vw;
+        position: relative;
+        display: flex;
     }
 
     #root {
         height: 100%;
         width: 100%;
+        position: relative;
+        display: flex;
     }
 `;
