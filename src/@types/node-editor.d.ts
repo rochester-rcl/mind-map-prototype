@@ -23,3 +23,9 @@ interface IDraftSelectedTextNode {
   node: import("react-flow-renderer").Node;
   selected: IDraftTextSelection;
 }
+
+interface ISimpleNode {
+  node: import("react-flow-renderer").Node;
+}
+
+type InternalNode = ISimpleNode | IDraftSelectedTextNode;

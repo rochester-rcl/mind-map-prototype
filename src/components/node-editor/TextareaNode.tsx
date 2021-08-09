@@ -4,11 +4,14 @@ import { Handle, NodeProps, Position } from "react-flow-renderer";
 import { Palette } from "../../styles/GlobalStyles";
 import Textarea from "../ui/Textarea";
 
+export const NodeWidth = 200;
+
 // Add additional label styles here
 const NodeContainer = styled.div`
   display: flex;
   alignitems: center;
   padding: 20px;
+  width: ${NodeWidth}px;
   border: 1px solid ${(props: { selected: boolean }) =>
     props.selected ? Palette.green : Palette.lightGrey}};
   background: ${Palette.white};
