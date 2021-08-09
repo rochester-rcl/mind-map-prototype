@@ -18,6 +18,7 @@ const HighlightedTextDragLayer = styled.span.attrs(
   max-width: 100px;
   text-align: center;
   overflow: hidden;
+  border-radius: 2px;
   padding: 10px;
   text-overflow: ellipsis;
   background: ${(props: IHighlightedTextDragLayerProps) =>

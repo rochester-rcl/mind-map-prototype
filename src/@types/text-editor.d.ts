@@ -1,6 +1,9 @@
 interface ITextEditorProps {
-  onSelect?: (selection: IDraftTextSelection) => void;
+  onSelect?: (selection: IDraftTextSelection | null) => void;
   highlightedContent?: IDraftTextSelection[];
+  innerRef: React.RefObject<
+    import("draft-js").Editor
+  >;
 }
 
 interface IDraftTextSelection {

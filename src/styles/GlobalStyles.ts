@@ -36,4 +36,8 @@ export const GlobalStyle = createGlobalStyle`
         position: relative;
         display: flex;
     }
+
+    .DraftEditor-root, .DraftEditor-editorContainer, .public-DraftEditor-content {
+        height: 100%;
+    }
 `;

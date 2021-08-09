@@ -37,6 +37,7 @@ function Highlighted(props: IDraftDecoratorProps) {
 }
 
 const EditorContainer = styled.div`
+  height: 100%;
   caret-color: ${(props: ITextareaProps) => props.caretColor || Palette.green};
   &::selection {
     color: ${(props: ITextareaProps) => props.selectedColor || Palette.green};
@@ -78,7 +79,7 @@ function createHighlightDecorator(
 }
 
 export default function TextEditor(props: ITextEditorProps) {
-  const { onSelect, highlightedContent } = props;
+  const { onSelect, highlightedContent, innerRef } = props;
 
   const [editorState, setEditorState] = useState(() =>
     EditorState.createEmpty(createHighlightDecorator([]))
@@ -93,7 +94,11 @@ export default function TextEditor(props: ITextEditorProps) {
     const startOffset = selectionState.getStartOffset();
     const endOffset = selectionState.getEndOffset();
     const text = block.getText().slice(startOffset, endOffset);
-    setCurrentSelection({ text, startOffset, endOffset, anchorKey });
+    if (text !== "") {
+      setCurrentSelection({ text, startOffset, endOffset, anchorKey });
+    } else {
+      setCurrentSelection(null);
+    }
   }
 
   useEffect(() => {
@@ -101,7 +106,7 @@ export default function TextEditor(props: ITextEditorProps) {
   }, [editorState]);
 
   useEffect(() => {
-    if (onSelect && currentSelection) {
+    if (onSelect) {
       onSelect(currentSelection);
     }
   }, [currentSelection]);
@@ -119,6 +124,7 @@ export default function TextEditor(props: ITextEditorProps) {
   return (
     <EditorContainer>
       <Editor
+        ref={innerRef}
         placeholder="Add text ..."
         editorState={editorState}
         onChange={setEditorState}
