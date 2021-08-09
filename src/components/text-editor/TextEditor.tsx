@@ -125,7 +125,6 @@ export default function TextEditor(props: ITextEditorProps) {
     <EditorContainer>
       <Editor
         ref={innerRef}
-        placeholder="Add text ..."
         editorState={editorState}
         onChange={setEditorState}
       />

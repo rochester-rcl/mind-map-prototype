@@ -30,15 +30,17 @@ const SelectedTextDisplay = styled.div`
   position: absolute;
   bottom: 20px;
   right: 20px;
-  max-height: 50px;
-  max-width: 100px;
-  text-align: center;
+  display: block;
+  position: absolute;
+  max-height: 200px;
+  max-width: 200px;
   overflow: hidden;
+  border-radius: 2px;
   padding: 10px;
   text-overflow: ellipsis;
-  z-index: 2;
-  border-radius: 2px;
+  white-space: nowrap;
   cursor: pointer;
+  z-index: 2;
   animation: ${animateScale} 2s ease-in-out infinite;
   background: ${Palette.green};
   &::hover {

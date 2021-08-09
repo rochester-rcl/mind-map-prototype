@@ -13,14 +13,15 @@ const HighlightedTextDragLayer = styled.span.attrs(
     }
   })
 )`
+  display: block;
   position: absolute;
-  max-height: 50px;
-  max-width: 100px;
-  text-align: center;
+  max-height: 200px;
+  max-width: 200px;
   overflow: hidden;
   border-radius: 2px;
   padding: 10px;
   text-overflow: ellipsis;
+  white-space: nowrap;
   background: ${(props: IHighlightedTextDragLayerProps) =>
     props.highlightedColor || Palette.green};
 `;
