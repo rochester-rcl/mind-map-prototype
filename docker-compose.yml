@@ -12,4 +12,4 @@ services:
             - ./:/home/node/working
             - /home/node/working/node_modules
         ports:
-            - 3000:3000
+            - ${MIND_MAP_PORT}:3000
