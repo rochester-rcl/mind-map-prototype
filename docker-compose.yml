@@ -13,3 +13,4 @@ services:
             - /home/node/working/node_modules
         ports:
             - ${MIND_MAP_PORT}:3000
+        restart: always
