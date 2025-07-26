@@ -41,9 +41,16 @@ const NodeLabelTextEditorContainer = styled.div`
  * @param props
  * @returns
  */
+  interface INodeLabelProps {
+  label: string;
+  selected: boolean;
+  onChange?: (val: string) => void;
+}
+
 function TextareaNode(props: INodeLabelProps) {
-  const { label, selected } = props;
+  const { label, selected, onChange } = props;
   const [active, setActive] = useState(false);
+  const [value, setValue] = useState(label);
 
   function handleSetActive() {
     setActive(true);
@@ -60,11 +67,18 @@ function TextareaNode(props: INodeLabelProps) {
         selected={selected && active}
         onClick={handleSetActive}
       >
+        
         <Textarea
-          defaultValue={label}
-          disabled={!selected && !active}
-          onMouseDown={handleTextareaMouseDown}
-        />
+  value={value}
+  disabled={!selected && !active}
+  onMouseDown={handleTextareaMouseDown}
+  onChange={val => {
+    const newVal =
+      typeof val === "string" ? val : (val.target as HTMLTextAreaElement).value;
+    setValue(newVal);
+    onChange?.(newVal);    // notify NodeEditor
+  }}
+/>
       </NodeLabelTextEditorContainer>
     </NodeContainer>
   );
@@ -80,7 +94,11 @@ export default memo((props: NodeProps) => {
         style={{ background: Palette.green }}
         isConnectable={isConnectable}
       />
-      <TextareaNode label={data.label} selected={selected} />
+      <TextareaNode
+        label={data.label}
+        selected={selected}
+        onChange={data.onChange}   /* pass the callback down */
+      />
       <Handle
         type="source"
         position={Position.Bottom}
