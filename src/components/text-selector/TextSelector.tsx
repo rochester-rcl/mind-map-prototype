@@ -1,25 +1,22 @@
 import { useState, useEffect, useContext, createRef } from "react";
 import { useDrag } from "react-dnd";
+import { getEmptyImage } from "react-dnd-html5-backend";
+import styled, { keyframes } from "styled-components";
+import { Editor } from "draft-js";
+
 import { SelectedText } from "../../constants/DragAndDropItemTypes";
 import { AppContext } from "../../App";
 import TextEditor from "../text-editor/TextEditor";
-import { getEmptyImage } from "react-dnd-html5-backend";
-import styled, { keyframes } from "styled-components";
 import { Palette } from "../../styles/GlobalStyles";
-import { Editor } from "draft-js";
+
+/* ------------------------------------------------------------------ */
+/*  Styled components                                                  */
+/* ------------------------------------------------------------------ */
 
 const animateScale = keyframes`
-  0% {
-    transform: scale(1.0);
-  }
-
-  50% {
-    transform: scale(1.10);
-  }
-
-  100% {
-    transform: scale(1.0);
-  }
+  0%   { transform: scale(1);   }
+  50%  { transform: scale(1.10);}
+  100% { transform: scale(1);   }
 `;
 
 const TextSelectorContainer = styled.div`
@@ -30,8 +27,6 @@ const SelectedTextDisplay = styled.div`
   position: absolute;
   bottom: 20px;
   right: 20px;
-  display: block;
-  position: absolute;
   max-height: 200px;
   max-width: 200px;
   overflow: hidden;
@@ -43,59 +38,67 @@ const SelectedTextDisplay = styled.div`
   z-index: 2;
   animation: ${animateScale} 2s ease-in-out infinite;
   background: ${Palette.green};
-  &::hover {
-    opacity: 0.6;
-  }
 `;
+
+/* ------------------------------------------------------------------ */
+/*  Component                                                          */
+/* ------------------------------------------------------------------ */
+
 /**
- * A basic component for adding and selecting text
- * @param props
- * @returns
+ * Extra props in Patch 1
+ * – `initialText` : fill editor initially / on import
+ * – `onChange`    : emit plain text upward
  */
-export default function TextSelector(props: ITextSelectorProps) {
-  const { onSelect } = props;
+export default function TextSelector(
+  props: ITextSelectorProps & {
+    initialText?: string;
+    onChange?: (plain: string) => void;
+  }
+) {
+  const { onSelect, initialText = "", onChange } = props;
+
   const { selectedTextNodes, highlightedTexts } = useContext(AppContext);
   const editorRef = createRef<Editor>();
-  // internal component state
+
+  /* ----------  Drag‑n‑drop selection state ---------- */
   const [selected, setSelected] = useState<IDraftTextSelection | null>(null);
 
-  const [collected, drag, dragPreview] = useDrag(
+  const [, drag, dragPreview] = useDrag(
     () => ({
       type: SelectedText,
       item: selected,
       canDrag: () => selected !== null,
-      collect: monitor => ({
-        isDragging: monitor.isDragging()
-      }),
-      end: (item, monitor) => {
-        if (monitor.didDrop()) {
-          setSelected(null);
-        }
+      end: (_item, monitor) => {
+        if (monitor.didDrop()) setSelected(null);
       }
     }),
     [selected]
   );
 
-  // this callback is only called when selected or onSelect is changed
+  /* Call parent on selection */
   useEffect(() => {
-    if (selected && onSelect) {
-      onSelect(selected);
-    }
+    if (selected && onSelect) onSelect(selected);
   }, [selected, onSelect]);
 
+  /* Hide default drag preview */
   useEffect(() => {
     dragPreview(getEmptyImage(), { captureDraggingState: true });
   }, [dragPreview]);
 
+  /* ----------  Render ---------- */
   return (
     <TextSelectorContainer>
       <TextEditor
         innerRef={editorRef}
         onSelect={setSelected}
         highlightedContent={highlightedTexts}
+        initialText={initialText}
+        onChange={onChange}
       />
       {selected ? (
-        <SelectedTextDisplay ref={drag}>{selected.text}</SelectedTextDisplay>
+        <SelectedTextDisplay ref={drag}>
+          {selected.text}
+        </SelectedTextDisplay>
       ) : null}
     </TextSelectorContainer>
   );
