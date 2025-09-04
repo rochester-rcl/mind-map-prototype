@@ -88,16 +88,31 @@ function App() {
   /* -------- Patch 1: article text + node‑editor ref -------- */
   const [article, setArticle] = useState<string>("");
   const nodeRef = useRef<NodeEditorHandle>(null);
+function downloadJSON(filename: string, json: string) {
+  const blob = new Blob([json], { type: "application/json;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
 
   /* -------- Export / Import handlers -------- */
-  function handleExport() {
-    const map = nodeRef.current?.getMap();
-    if (!map) return;
-    const exportData = { ...map, article };   // merge in the article
-    navigator.clipboard
-      .writeText(JSON.stringify(exportData, null, 2))
-      .catch(() => alert("Could not copy to clipboard."));
-  }
+ function handleExport() {
+  const map = nodeRef.current?.getMap();
+  if (!map) return;
+
+  const exportData = { ...map, article };
+  const json = JSON.stringify(exportData, null, 2);
+
+  // Always download a file (no clipboard)
+  downloadJSON("mind-map.json", json);
+}
+
+
 
   function handleImport() {
     const raw = prompt("Paste the exported JSON here:");
